@@ -2,9 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vmName": {
+        "vmName1": {
             "type": "string",
-            "defaultValue": "simpleLinuxVM",
+            "defaultValue": "simpleLinuxVM1",
+            "metadata": {
+                "description": "The name of you Virtual Machine."
+            }
+        },"vmName2": {
+            "type": "string",
+            "defaultValue": "simpleLinuxVM2",
             "metadata": {
                 "description": "The name of you Virtual Machine."
             }
@@ -32,9 +38,16 @@
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
             }
         },
-        "dnsLabelPrefix": {
+        "dnsLabelPrefix1": {
             "type": "string",
-            "defaultValue": "[toLower(concat('simplelinuxvm-', uniqueString(resourceGroup().id)))]",
+            "defaultValue": "[toLower(concat('simplelinuxvm1-', uniqueString(resourceGroup().id)))]",
+            "metadata": {
+                "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
+            }
+        },       
+        "dnsLabelPrefix2": {
+            "type": "string",
+            "defaultValue": "[toLower(concat('simplelinuxvm1-', uniqueString(resourceGroup().id)))]",
             "metadata": {
                 "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
             }
@@ -89,8 +102,10 @@
         }
     },
     "variables": {
-        "publicIpAddressName": "[concat(parameters('vmName'), 'PublicIP' )]",
-        "networkInterfaceName": "[concat(parameters('vmName'),'NetInt')]",
+        "publicIpAddressName1": "[concat(parameters('vmName1'), 'PublicIP' )]",
+        "networkInterfaceName1": "[concat(parameters('vmName1'),'NetInt')]",        
+        "publicIpAddressName2": "[concat(parameters('vmName2'), 'PublicIP' )]",
+        "networkInterfaceName2": "[concat(parameters('vmName2'),'NetInt')]",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
         "osDiskType": "Standard_LRS",
         "subnetAddressPrefix": "10.1.0.0/24",
@@ -111,12 +126,12 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2018-10-01",
-            "name": "[variables('networkInterfaceName')]",
+            "name": "[variables('networkInterfaceName1')]",
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
                 "[resourceId('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-                "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+                "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName1'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -128,7 +143,37 @@
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName1'))]"
+                            }
+                        }
+                    }
+                ],
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('networkSecurityGroupName'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-10-01",
+            "name": "[variables('networkInterfaceName2')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+                "[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName2'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig2",
+                        "properties": {
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIpAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName2'))]"
                             }
                         }
                     }
@@ -187,13 +232,30 @@
         {
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "2019-02-01",
-            "name": "[variables('publicIpAddressName')]",
+            "name": "[variables('publicIpAddressName1')]",
             "location": "[parameters('location')]",
             "properties": {
                 "publicIpAllocationMethod": "Dynamic",
                 "publicIPAddressVersion": "IPv4",
                 "dnsSettings": {
-                    "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+                    "domainNameLabel": "[parameters('dnsLabelPrefix1')]"
+                },
+                "idleTimeoutInMinutes": 4
+            },
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            }
+        },        {
+            "type": "Microsoft.Network/publicIpAddresses",
+            "apiVersion": "2019-02-01",
+            "name": "[variables('publicIpAddressName2')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "publicIpAllocationMethod": "Dynamic",
+                "publicIPAddressVersion": "IPv4",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('dnsLabelPrefix2')]"
                 },
                 "idleTimeoutInMinutes": 4
             },
@@ -205,10 +267,10 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-03-01",
-            "name": "[parameters('vmName')]",
+            "name": "[parameters('vmName1')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName1'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -231,18 +293,60 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName1'))]"
                         }
                     ]
                 },
                 "osProfile": {
-                    "computerName": "[parameters('vmName')]",
+                    "computerName": "[parameters('vmName1')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPasswordOrKey')]",
+                    "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2019-03-01",
+            "name": "[parameters('vmName2')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName1'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('VmSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('osDiskType')]"
+                        }
+                    },
+                    "imageReference": {
+                        "publisher": "Canonical",
+                        "offer": "UbuntuServer",
+                        "sku": "[parameters('ubuntuOSVersion')]",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName2'))]"
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmName2')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPasswordOrKey')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 }
             }
         }
+
     ],
     "outputs": {
         "adminUsername": {
