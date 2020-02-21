@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "galleries_CENTXImages_externalid": {
+            "defaultValue": "/subscriptions/a2e63101-6274-4190-a9a0-b238157993cb/resourceGroups/DevTestLab/providers/Microsoft.Compute/galleries/CENTXImages",
+            "type": "String"
+        },
         "vmName1": {
             "type": "string",
             "defaultValue": "simpleLinuxVM1",
@@ -284,10 +288,7 @@
                         }
                     },
                     "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
+                        "id": "[concat(parameters('galleries_CENTXImages_externalid'), '/images/LinuxVMImgDef')]"
                     }
                 },
                 "networkProfile": {
@@ -325,12 +326,8 @@
                         }
                     },
                     "imageReference": {
-                        "publisher": "Canonical",
-                        "offer": "UbuntuServer",
-                        "sku": "[parameters('ubuntuOSVersion')]",
-                        "version": "latest"
-                    }
-                },
+                        "id": "[concat(parameters('galleries_CENTXImages_externalid'), '/images/LinuxVMImgDef')]"
+                    }               },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
@@ -369,4 +366,5 @@
             "type": "string",
             "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName2')).dnsSettings.fqdn)]"
     }
-}}
+    }
+}
