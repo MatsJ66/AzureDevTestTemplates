@@ -369,4 +369,4 @@
             "type": "string",
             "value": "[concat('ssh ', parameters('adminUsername'), '@', reference(variables('publicIPAddressName2')).dnsSettings.fqdn)]"
     }
-}
+}}
