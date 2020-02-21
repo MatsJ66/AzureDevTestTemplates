@@ -281,6 +281,12 @@
                     "vmSize": "[parameters('VmSize')]"
                 },
                 "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        }
+                    },
                     "imageReference": {
                         "id": "[concat(parameters('galleries_CENTXImages_externalid'), '/images/LinuxVMImgDef')]"
                     }
@@ -313,6 +319,12 @@
                     "vmSize": "[parameters('VmSize')]"
                 },
                 "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        }
+                    },
                     "imageReference": {
                         "id": "[concat(parameters('galleries_CENTXImages_externalid'), '/images/LinuxVMImgDef')]"
                     }               },
