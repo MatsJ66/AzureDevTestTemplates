@@ -353,9 +353,13 @@
             "type": "string",
             "value": "[parameters('adminUsername')]"
         },
-        "hostname": {
+        "hostname1": {
             "type": "string",
-            "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+            "value": "[reference(variables('publicIPAddressName1')).dnsSettings.fqdn]"
+        },
+        "hostname2": {
+            "type": "string",
+            "value": "[reference(variables('publicIPAddressName2')).dnsSettings.fqdn]"
         },
         "sshCommand": {
             "type": "string",
