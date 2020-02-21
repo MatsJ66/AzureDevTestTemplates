@@ -47,7 +47,7 @@
         },       
         "dnsLabelPrefix2": {
             "type": "string",
-            "defaultValue": "[toLower(concat('simplelinuxvm1-', uniqueString(resourceGroup().id)))]",
+            "defaultValue": "[toLower(concat('simplelinuxvm2-', uniqueString(resourceGroup().id)))]",
             "metadata": {
                 "description": "Unique DNS Name for the Public IP used to access the Virtual Machine."
             }
