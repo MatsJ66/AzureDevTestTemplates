@@ -58,35 +58,35 @@
            "type": "array"
         },
         "publicIpAddressName": {
-            "value": "LinuxVM2-ip",
+            "defaultValue": "LinuxVM2-ip",
             "type": "string"
         },
         "publicIpAddressType": {
-            "value": "Dynamic",
+            "defaultValue": "Dynamic",
             "type": "string"
         },
         "publicIpAddressSku": {
-            "value": "Basic",
+            "defaultValue": "Basic",
             "type": "string"
         },
         "virtualMachineName": {
-            "value": "LinuxVM2",
+            "defaultValue": "LinuxVM2",
             "type": "string"
         },
         "virtualMachineRG": {
-            "value": "LinuxVM2",
+            "defaultValue": "LinuxVM2",
             "type": "string"
         },
         "osDiskType": {
-            "value": "Premium_LRS",
+            "defaultValue": "Premium_LRS",
             "type": "string"
         },
         "virtualMachineSize": {
-            "value": "Standard_B1s",
+            "defaultValue": "Standard_B1s",
             "type": "string"
         },
         "adminUsername": {
-            "value": "qmajohn",
+            "defaultValue": "qmajohn",
             "type": "string"
         },
         "adminPassword": {
