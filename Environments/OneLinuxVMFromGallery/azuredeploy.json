@@ -11,50 +11,87 @@
             "type": "string"
         },
         "networkSecurityGroupName": {
-            "value": "LinuxVM2-nsg",
+            "defaultValue": "LinuxVM2-nsg",
             "type": "string"
         },
         "networkSecurityGroupRules": {
+            "defaultValue": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ],
             "type": "array"
         },
         "subnetName": {
+            "defaultValue": "default",
             "type": "string"
         },
         "virtualNetworkName": {
+            "defaultValue": "LinuxVM2-vnet",
             "type": "string"
         },
         "addressPrefixes": {
+            "defaultValue": [
+                "10.0.16.0/24"
+            ],
             "type": "array"
         },
         "subnets": {
-            "type": "array"
+            "defaultValue": [
+                {
+                    "name": "default",
+                    "properties": {
+                        "addressPrefix": "10.0.16.0/24"
+                    }
+                }
+            ],
+           "type": "array"
         },
         "publicIpAddressName": {
+            "value": "LinuxVM2-ip",
             "type": "string"
         },
         "publicIpAddressType": {
+            "value": "Dynamic",
             "type": "string"
         },
         "publicIpAddressSku": {
+            "value": "Basic",
             "type": "string"
         },
         "virtualMachineName": {
+            "value": "LinuxVM2",
             "type": "string"
         },
         "virtualMachineRG": {
+            "value": "LinuxVM2",
             "type": "string"
         },
         "osDiskType": {
+            "value": "Premium_LRS",
             "type": "string"
         },
         "virtualMachineSize": {
+            "value": "Standard_B1s",
             "type": "string"
         },
         "adminUsername": {
+            "value": "qmajohn",
             "type": "string"
         },
         "adminPassword": {
-            "type": "secureString"
+            "defaultValue": null,
+            "type": "securestring"
         }
     },
     "variables": {
