@@ -7,9 +7,11 @@
             "type": "string"
         },
         "networkInterfaceName": {
+            "defaultValue": "linuxvm2945",
             "type": "string"
         },
         "networkSecurityGroupName": {
+            "value": "LinuxVM2-nsg",
             "type": "string"
         },
         "networkSecurityGroupRules": {
