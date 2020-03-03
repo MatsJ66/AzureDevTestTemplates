@@ -7,11 +7,11 @@
             "type": "string"
         },
         "networkInterfaceName": {
-            "defaultValue": "linuxvm2945",
+            "defaultValue": "LinuxVM3945",
             "type": "string"
         },
         "networkSecurityGroupName": {
-            "defaultValue": "LinuxVM2-nsg",
+            "defaultValue": "LinuxVM3-nsg",
             "type": "string"
         },
         "networkSecurityGroupRules": {
@@ -37,7 +37,7 @@
             "type": "string"
         },
         "virtualNetworkName": {
-            "defaultValue": "LinuxVM2-vnet",
+            "defaultValue": "LinuxVM3-vnet",
             "type": "string"
         },
         "addressPrefixes": {
@@ -58,7 +58,7 @@
            "type": "array"
         },
         "publicIpAddressName": {
-            "defaultValue": "LinuxVM2-ip",
+            "defaultValue": "LinuxVM3-ip",
             "type": "string"
         },
         "publicIpAddressType": {
@@ -70,11 +70,7 @@
             "type": "string"
         },
         "virtualMachineName": {
-            "defaultValue": "LinuxVM2",
-            "type": "string"
-        },
-        "virtualMachineRG": {
-            "defaultValue": "LinuxVM2",
+            "defaultValue": "LinuxVM3",
             "type": "string"
         },
         "osDiskType": {
