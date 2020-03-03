@@ -2,16 +2,32 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "networkInterfaceName": {
-            "defaultValue": "LinuxVM3945",
+        "virtualMachineName":{
+            "defaultValue": "LinuxVM3",
             "type": "string"
         },
-        "networkSecurityGroupName": {
-            "defaultValue": "LinuxVM3-nsg",
+        "adminUsername": {
+            "defaultValue": "qmajohn",
             "type": "string"
         },
-        "networkSecurityGroupRules": {
-            "defaultValue": [
+        "adminPassword": {
+            "defaultValue": null,
+            "type": "securestring"
+        }
+    },
+    "variables": {
+        "location":  "westeurope",
+        "networkInterfaceName": "LinuxVM3945",
+        "networkSecurityGroupName": "LinuxVM3-nsg",
+        "subnetName": "default",
+        "virtualNetworkName": "LinuxVM3-vnet",
+        "publicIpAddressName": "LinuxVM3-ip",
+        "publicIpAddressType": "Dynamic",
+        "publicIpAddressSku": "Basic",
+        "osDiskType": "Premium_LRS",
+        "virtualMachineSize": "Standard_B1s",
+        "networkSecurityGroupRules": 
+        [
                 {
                     "name": "SSH",
                     "properties": {
@@ -26,85 +42,33 @@
                     }
                 }
             ],
-            "type": "array"
-        },
-        "subnetName": {
-            "defaultValue": "default",
-            "type": "string"
-        },
-        "virtualNetworkName": {
-            "defaultValue": "LinuxVM3-vnet",
-            "type": "string"
-        },
-        "addressPrefixes": {
-            "defaultValue": [
+        "addressPrefixes": 
+        [
                 "10.0.16.0/24"
-            ],
-            "type": "array"
-        },
-        "subnets": {
-            "defaultValue": [
+        ],
+        "subnets":
+        [
                 {
                     "name": "default",
                     "properties": {
                         "addressPrefix": "10.0.16.0/24"
                     }
                 }
-            ],
-           "type": "array"
-        },
-        "publicIpAddressName": {
-            "defaultValue": "LinuxVM3-ip",
-            "type": "string"
-        },
-        "publicIpAddressType": {
-            "defaultValue": "Dynamic",
-            "type": "string"
-        },
-        "publicIpAddressSku": {
-            "defaultValue": "Basic",
-            "type": "string"
-        },
-        "virtualMachineName": {
-            "defaultValue": "LinuxVM3",
-            "type": "string"
-        },
-        "osDiskType": {
-            "defaultValue": "Premium_LRS",
-            "type": "string"
-        },
-        "virtualMachineSize": {
-            "defaultValue": "Standard_B1s",
-            "type": "string"
-        },
-        "adminUsername": {
-            "defaultValue": "qmajohn",
-            "type": "string"
-        },
-        "adminPassword": {
-            "defaultValue": null,
-            "type": "securestring"
-        }
-    },
-    "variables": {
-        "location": {
-            "defaultValue": "westeurope",
-            "type": "string"
-        },
-        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
-        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
+        ],
+        "nsgId": "[resourceId(resourceGroup().name, 'Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]",
+        "vnetId": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', variables('subnetName'))]"
     },
     "resources": [
         {
-            "name": "[parameters('networkInterfaceName')]",
+            "name": "[variables('networkInterfaceName')]",
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2019-07-01",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-                "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]"
+                "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -116,7 +80,7 @@
                             },
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIpAddress": {
-                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]"
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses', variables('publicIpAddressName'))]"
                             }
                         }
                     }
@@ -127,36 +91,36 @@
             }
         },
         {
-            "name": "[parameters('networkSecurityGroupName')]",
+            "name": "[variables('networkSecurityGroupName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2019-02-01",
             "location": "[variables('location')]",
             "properties": {
-                "securityRules": "[parameters('networkSecurityGroupRules')]"
+                "securityRules": "[variables('networkSecurityGroupRules')]"
             }
         },
         {
-            "name": "[parameters('virtualNetworkName')]",
+            "name": "[variables('virtualNetworkName')]",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-09-01",
             "location": "[variables('location')]",
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": "[parameters('addressPrefixes')]"
+                    "addressPrefixes": "[variables('addressPrefixes')]"
                 },
-                "subnets": "[parameters('subnets')]"
+                "subnets": "[variables('subnets')]"
             }
         },
         {
-            "name": "[parameters('publicIpAddressName')]",
+            "name": "[variables('publicIpAddressName')]",
             "type": "Microsoft.Network/publicIpAddresses",
             "apiVersion": "2019-02-01",
             "location": "[variables('location')]",
             "properties": {
-                "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+                "publicIpAllocationMethod": "[variables('publicIpAddressType')]"
             },
             "sku": {
-                "name": "[parameters('publicIpAddressSku')]"
+                "name": "[variables('publicIpAddressSku')]"
             }
         },
         {
@@ -165,17 +129,17 @@
             "apiVersion": "2019-07-01",
             "location": "[variables('location')]",
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]"
+                "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
             ],
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "[parameters('virtualMachineSize')]"
+                    "vmSize": "[variables('virtualMachineSize')]"
                 },
                 "storageProfile": {
                     "osDisk": {
                         "createOption": "fromImage",
                         "managedDisk": {
-                            "storageAccountType": "[parameters('osDiskType')]"
+                            "storageAccountType": "[variables('osDiskType')]"
                         }
                     },
                     "imageReference": {
@@ -185,7 +149,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
                         }
                     ]
                 },
