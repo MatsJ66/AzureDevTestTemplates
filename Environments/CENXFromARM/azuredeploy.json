@@ -265,14 +265,5 @@
                 }
             }
         }
-    ],
-    "outputs": {
-        "publicIPs": {
-          "type": "array",
-          "copy": {
-            "count": "[parameters('numberOfEnvironments')]",
-            "input": "[reference(resourceId('Microsoft.Network/publicIPAddresses', concat(variables('publicIPAddressIPName'),copyindex()))).ipAddress]"
-          }
-        }
-      }
+    ]
 }
