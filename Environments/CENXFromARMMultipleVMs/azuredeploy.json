@@ -34,6 +34,13 @@
             "metadata": {
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
             }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+            "description": "Location for all resources."
+            }
         }
     },
     "variables": {
@@ -63,7 +70,7 @@
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2019-11-01",
             "name": "[variables('NSGName')]",
-            "location": "westeurope",
+            "location":"[parameters('location')]",
             "properties": {
                 "securityRules": [
                     {
@@ -90,7 +97,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2019-11-01",
             "name": "[concat('Env',copyindex(),'-',variables('PIPNameVM1'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "PIPLoopVM1",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -110,7 +117,7 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2019-11-01",
             "name": "[concat('Env',copyindex(),'-',variables('PIPNameVM2'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "PIPLoopVM2",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -130,7 +137,7 @@
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2019-11-01",
             "name": "[concat('Env',copyindex(),'-',variables('vNetName'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "VNetLoop",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -201,7 +208,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-07-01",
             "name": "[concat('Env',copyindex(),'-',variables('VMName1'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "VM1Loop",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -246,7 +253,7 @@
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2019-07-01",
             "name": "[concat('Env',copyindex(),'-',variables('VMName2'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "VM2Loop",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -276,8 +283,7 @@
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPasswordOrKey')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
-                    }
-            ,
+                },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
@@ -286,12 +292,12 @@
                     ]
                 }
             }
-        } ,
+        },
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2019-11-01",
             "name": "[concat('Env',copyindex(),'-',variables('NICNameVM1'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "nicLoopVM1",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -333,7 +339,7 @@
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2019-11-01",
             "name": "[concat('Env',copyindex(),'-',variables('NICNameVM2'))]",
-            "location": "westeurope",
+            "location": "[parameters('location')]",
             "copy": {
                 "name": "nicLoopVM2",
                 "count": "[parameters('numberOfEnvironments')]"
@@ -389,7 +395,7 @@
                         "value": "[concat('Env',copyindex(),'-',variables('VMName1'))]"
                     },
                     "location": {
-                        "value": "westeurope"
+                        "value": "[parameters('location')]"
                     },
                     "fileUris": {
                         "value": [
@@ -412,7 +418,7 @@
             "copy": {
                 "name": "extensionLoop1",
                 "count": "[parameters('numberOfEnvironments')]"
-              },
+            },
             "properties": {
                 "mode": "incremental",
                 "templateLink": {
@@ -423,7 +429,7 @@
                         "value": "[concat('Env',copyindex(),'-',variables('VMName2'))]"
                     },
                     "location": {
-                        "value": "westeurope"
+                        "value": "[parameters('location')]"
                     },
                     "fileUris": {
                         "value": [
